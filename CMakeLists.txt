@@ -1,11 +1,5 @@
-cmake_minimum_required (VERSION 3.0)
-cmake_policy(VERSION 3.0)
-
-project(LearnOpenGL)
-
-set(CMAKE_CXX_STANDARD 17) # this does nothing for MSVC, use target_compile_options below
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS ON)
+cmake_minimum_required(VERSION 3.29.0)
+project(LearnOpenGL VERSION 0.1.0 LANGUAGES C CXX)
 
 IF(NOT CMAKE_BUILD_TYPE)
   SET(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build (Debug or Release)" FORCE)
@@ -36,7 +30,8 @@ if(APPLE)
 endif(APPLE)
 
 if(WIN32)
-  set(LIBS glfw3 opengl32 assimp freetype irrKlang)
+  set(LIBS glfw3 assimp)
+  find_package(OpenGL REQUIRED)
   add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 elseif(UNIX AND NOT APPLE)
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall")
@@ -163,7 +158,7 @@ set(LIBS ${LIBS} GLAD)
 
 macro(makeLink src dest target)
   add_custom_command(TARGET ${target} POST_BUILD COMMAND ${CMAKE_COMMAND} -E create_symlink ${src} ${dest}  DEPENDS  ${dest} COMMENT "mklink ${src} -> ${dest}")
-endmacro()
+endmacro() 
 
 function(create_project_from_sources chapter demo)
 	file(GLOB SOURCE
@@ -211,11 +206,15 @@ function(create_project_from_sources chapter demo)
     )
 	# copy dlls
 	file(GLOB DLLS "dlls/*.dll")
+    
+    if(WIN32)
+        add_custom_command(TARGET ${NAME} PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${DLLS} $<TARGET_FILE_DIR:${NAME}>)
+    endif(WIN32)
+
     foreach(SHADER ${SHADERS})
         if(WIN32)
             # configure_file(${SHADER} "test")
             add_custom_command(TARGET ${NAME} PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${SHADER} $<TARGET_FILE_DIR:${NAME}>)
-			add_custom_command(TARGET ${NAME} PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${DLLS} $<TARGET_FILE_DIR:${NAME}>)
         elseif(UNIX AND NOT APPLE)
             file(COPY ${SHADER} DESTINATION ${CMAKE_SOURCE_DIR}/bin/${chapter})
         elseif(APPLE)
