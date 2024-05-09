@@ -24,6 +24,10 @@ int main(){
     //设置使用核心模式
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+#ifdef __APPLE__
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
+
     //创建窗口对象
     GLFWwindow* window = glfwCreateWindow(800, 600, "LearnOpenGL", NULL, NULL);
     if(window == NULL){
@@ -33,17 +37,13 @@ int main(){
     }
     //通知GLFW将我们窗口的上下文设置为当前线程的主上下文
     glfwMakeContextCurrent(window);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     //初始化GLAD
     if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)){
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
-
-    //设置视口
-    glViewport(0, 0, 800, 600);
-    //注册窗口大小改变的回调函数
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     //顶点着色器
     const char* vertexShaderSource = 
@@ -143,7 +143,7 @@ int main(){
     glEnableVertexAttribArray(0);
 
     //线框模式
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     //普通模式
     //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 

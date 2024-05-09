@@ -112,17 +112,14 @@ int main(){
     }
     //通知GLFW将我们窗口的上下文设置为当前线程的主上下文
     glfwMakeContextCurrent(window);
+    //注册窗口大小改变的回调函数
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     //初始化GLAD
     if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)){
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
-
-    //设置视口
-    glViewport(0, 0, 800, 600);
-    //注册窗口大小改变的回调函数
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     //顶点着色器
     const char* vertexShaderSource = 

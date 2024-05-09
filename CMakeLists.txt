@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.29.0)
 project(LearnOpenGL VERSION 0.1.0 LANGUAGES C CXX)
 
+set(CMAKE_CXX_STANDARD 17) # this does nothing for MSVC, use target_compile_options below
+
 IF(NOT CMAKE_BUILD_TYPE)
   SET(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build (Debug or Release)" FORCE)
 ENDIF(NOT CMAKE_BUILD_TYPE)
@@ -58,92 +60,52 @@ endif(WIN32)
 
 set(CHAPTERS
     1.getting_started
-    # 2.lighting
-    # 3.model_loading
-    # 4.advanced_opengl
-    # 5.advanced_lighting
-    # 6.pbr
-    # 7.in_practice
+    2.lighting
+    3.model_loading
+    4.advanced_opengl
+    5.advanced_lighting
 )
 
 set(1.getting_started
     1_1_hello_triangle
     1_1_hello_triangle_hw
+    1_2_shader
+    1_3_texture
+    1_4_transform
+    1_5_coordinate_systems
+    1_6_camera
 )
 
 set(2.lighting
-    1.colors
-    2.1.basic_lighting_diffuse
-    2.2.basic_lighting_specular
-    3.1.materials
-    3.2.materials_exercise1
-    4.1.lighting_maps_diffuse_map
-    4.2.lighting_maps_specular_map
-    4.4.lighting_maps_exercise4
-    5.1.light_casters_directional
-    5.2.light_casters_point
-    5.3.light_casters_spot
-    5.4.light_casters_spot_soft
-    6.multiple_lights
+    2_1_color
+    2_2_lighting
+    2_3_material
+    2_4_lightmap
+    2_5_light_casters
+    2_6_multi_light
 )
 
 set(3.model_loading
-    1.model_loading
+    3_1_model
 )
 
 set(4.advanced_opengl
-    1.1.depth_testing
-    1.2.depth_testing_view
-    2.stencil_testing
-    3.1.blending_discard
-    3.2.blending_sort
-    5.1.framebuffers
-    5.2.framebuffers_exercise1
-    6.1.cubemaps_skybox
-    6.2.cubemaps_environment_mapping
-    8.advanced_glsl_ubo
-    9.1.geometry_shader_houses
-    9.2.geometry_shader_exploding
-    9.3.geometry_shader_normals
-    10.1.instancing_quads
-    10.2.asteroids
-    10.3.asteroids_instanced
-    11.1.anti_aliasing_msaa
-    11.2.anti_aliasing_offscreen
+    4_1_depth_test
+    4_2_stencil_test
+    4_3_blending
+    4_4_face_culling
+    4_5_framebuffers
+    4_6_cubemap
+    4_8_uniform_buffer
+    4_9_geometry_shader
+    4_10_instancing
+    4_11_antialiasing
 )
 
 set(5.advanced_lighting
-    1.advanced_lighting
-    2.gamma_correction
-    3.1.1.shadow_mapping_depth
-    3.1.2.shadow_mapping_base
-    3.1.3.shadow_mapping
-    3.2.1.point_shadows
-    3.2.2.point_shadows_soft
-    4.normal_mapping
-    5.1.parallax_mapping
-    5.2.steep_parallax_mapping
-    5.3.parallax_occlusion_mapping
-    6.hdr
-    7.bloom
-    8.1.deferred_shading
-    8.2.deferred_shading_volumes
-    9.ssao
-)
-
-set(6.pbr
-    1.1.lighting
-    1.2.lighting_textured
-    2.1.1.ibl_irradiance_conversion
-    2.1.2.ibl_irradiance
-    2.2.1.ibl_specular
-    2.2.2.ibl_specular_textured
-)
-
-set(7.in_practice
-    1.debugging
-    2.text_rendering
-    #3.2d_game
+    5_2_gamma
+    5_3_1_shadow_mapping
+    5_3_2_point_shadow
 )
 
 configure_file(configuration/root_directory.h.in configuration/root_directory.h)
@@ -196,13 +158,12 @@ function(create_project_from_sources chapter demo)
     endif(WIN32)
     # copy shader files to build directory
     file(GLOB SHADERS
-             "src/${chapter}/${demo}/*.vs"
-             # "src/${chapter}/${demo}/*.frag"
-             "src/${chapter}/${demo}/*.fs"
-             "src/${chapter}/${demo}/*.tcs"
-             "src/${chapter}/${demo}/*.tes"
-             "src/${chapter}/${demo}/*.gs"
-             "src/${chapter}/${demo}/*.cs"
+             "src/${chapter}/${demo}/shader/*.vs"
+             "src/${chapter}/${demo}/shader/*.fs"
+             "src/${chapter}/${demo}/shader/*.tcs"
+             "src/${chapter}/${demo}/shader/*.tes"
+             "src/${chapter}/${demo}/shader/*.gs"
+             "src/${chapter}/${demo}/shader/*.cs"
     )
 	# copy dlls
 	file(GLOB DLLS "dlls/*.dll")
